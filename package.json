@@ -1,7 +1,7 @@
 {
   "name": "kprojs-web-hid",
   "version": "1.0.0",
-  "description": "Keycard Pro Web HID Library",
+  "description": "Keycard Pro WebHID implementation of the communication layer based on Ledger Transport WebHID",
   "main": "lib/transport-web-hid.js",
   "module": "lib-es/transport-web-hid.js",
   "browser": "lib-es/transport-web-hid.js",
@@ -14,7 +14,7 @@
   },
   "author": "",
   "dependencies": {
-    "kprojs": "../kprojs"
+    "kprojs": "github:choppu/kprojs"
   },
   "devDependencies": {
     "@types/jest": "^29.5.4",
