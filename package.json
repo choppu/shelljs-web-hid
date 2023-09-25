@@ -10,7 +10,6 @@
   "scripts": {
     "clean": "rimraf lib lib-es",
     "prepare": "npm run build",
-    "prepack": "npm run build",
     "build": "tsc && tsc -m ES6 --outDir lib-es",
     "test": "jest"
   },
