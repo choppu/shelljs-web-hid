@@ -38,9 +38,10 @@ async function getFirstKProDevice(): Promise<HIDDevice> {
 /**
  * WebHID Transport implementation
  * @example
- * import TransportWebHID from "transport-webhid";
- * ...
- * TransportWebHID.create().then(transport => ...)
+ import TransportWebHID from "kprojs-web-hid";
+ ...
+ let transport: any;
+ transport = await TransportWebHID.create();
  */
 
 export default class TransportWebHID extends KProJS.Transport {
