@@ -1,7 +1,7 @@
 {
-  "name": "kprojs-web-hid",
+  "name": "shelljs-web-hid",
   "version": "1.0.0",
-  "description": "Keycard Pro WebHID implementation of the communication layer based on Ledger Transport WebHID",
+  "description": "Keycard Shell WebHID implementation of the communication layer based on Ledger Transport WebHID",
   "main": "lib/transport-web-hid.js",
   "module": "lib-es/transport-web-hid.js",
   "browser": "lib-es/transport-web-hid.js",
@@ -15,7 +15,7 @@
   },
   "author": "",
   "dependencies": {
-    "kprojs": "github:choppu/kprojs"
+    "shelljs": "github:choppu/shelljs"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

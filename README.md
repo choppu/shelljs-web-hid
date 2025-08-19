@@ -1,13 +1,13 @@
-## KProJS Web HID
+## ShellJS Web HID
 
-KProJS Web HID is based on [@ledgerhq/hw-transport-webhid](@ledgerhq/hw-transport-webhid) and allows to communicate with Keycard Pro using usb HID.
+ShellJS Web HID is based on [@ledgerhq/hw-transport-webhid](@ledgerhq/hw-transport-webhid) and allows to communicate with Keycard Shell using usb HID.
 
 ***
 
 ### Usage example
 
 ```javascript
-import TransportWebHID from "kprojs-web-hid";
+import TransportWebHID from "shelljs-web-hid";
 ...
 let transport: any;
 transport = await TransportWebHID.create();
@@ -16,7 +16,7 @@ transport = await TransportWebHID.create();
 
 ### Live Demo
 
-You can check a demo at [KPro Web HID Example Page](https://choppu.github.io/kprojs-example/).
+You can check a demo at [Shell Web HID Example Page](https://choppu.github.io/shelljs-example/).
 
 ### Support status
 
@@ -97,7 +97,7 @@ Similar to create() except it will never display the device permission (it retur
 
 #### open
 
-Create a KPro transport with a HIDDevice
+Create a Shell transport with a HIDDevice
 
 ##### Parameters
 

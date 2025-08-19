@@ -1,9 +1,9 @@
-import KProJS from "kprojs";
-import { DeviceTypes, TransportTypes } from "kprojs";
+import ShellJS from "shelljs";
+import { DeviceTypes, TransportTypes } from "shelljs";
 
-const kproDevices = [
+const shellDevices = [
   {
-    vendorId: KProJS.HIDFraming.kproUSBVendorId,
+    vendorId: ShellJS.HIDFraming.shellUSBVendorId,
   },
 ];
 
@@ -12,39 +12,39 @@ const isSupported = () => Promise.resolve(!!(window.navigator && window.navigato
 const getHID = (): HID => {
   // $FlowFixMe
   const { hid } = navigator;
-  if (!hid) throw new KProJS.KProError.TransportError("navigator.hid is not supported", "HIDNotSupported");
+  if (!hid) throw new ShellJS.ShellError.TransportError("navigator.hid is not supported", "HIDNotSupported");
   return hid;
 };
 
-async function requestKProDevices(): Promise<HIDDevice[]> {
+async function requestShellDevices(): Promise<HIDDevice[]> {
   const device = await getHID().requestDevice({
-    filters: kproDevices,
+    filters: shellDevices,
   });
   if (Array.isArray(device)) return device;
   return [device];
 }
 
-async function getKProDevices(): Promise<HIDDevice[]> {
+async function getShellDevices(): Promise<HIDDevice[]> {
   const devices = await getHID().getDevices();
-  return devices.filter(d => d.vendorId === KProJS.HIDFraming.kproUSBVendorId);
+  return devices.filter(d => d.vendorId === ShellJS.HIDFraming.shellUSBVendorId);
 }
 
-async function getFirstKProDevice(): Promise<HIDDevice> {
-  const existingDevices = await getKProDevices();
+async function getFirstShellDevice(): Promise<HIDDevice> {
+  const existingDevices = await getShellDevices();
   if (existingDevices.length > 0) return existingDevices[0];
-  const devices = await requestKProDevices();
+  const devices = await requestShellDevices();
   return devices[0];
 }
 /**
  * WebHID Transport implementation
  * @example
- import TransportWebHID from "kprojs-web-hid";
+ import TransportWebHID from "shelljs-web-hid";
  ...
  let transport: any;
  transport = await TransportWebHID.create();
  */
 
-export default class TransportWebHID extends KProJS.Transport {
+export default class TransportWebHID extends ShellJS.Transport {
   device: HIDDevice;
   deviceModel: DeviceTypes.DeviceModel | null | undefined;
   channel = Math.floor(Math.random() * 0xffff);
@@ -54,7 +54,7 @@ export default class TransportWebHID extends KProJS.Transport {
     super();
     this.device = device;
     this.deviceModel =
-      typeof device.productId === "number" ? KProJS.KProDevice.identifyUSBProductId(device.productId) : undefined;
+      typeof device.productId === "number" ? ShellJS.ShellDevice.identifyUSBProductId(device.productId) : undefined;
     device.addEventListener("inputreport", this.onInputReport);
   }
 
@@ -88,7 +88,7 @@ export default class TransportWebHID extends KProJS.Transport {
   /**
    * List the WebUSB devices that was previously authorized by the user.
    */
-  static list = getKProDevices;
+  static list = getShellDevices;
 
   /**
    * Actively listen to WebUSB devices and emit ONE device
@@ -98,14 +98,14 @@ export default class TransportWebHID extends KProJS.Transport {
    */
   static listen = (observer: TransportTypes.Observer<TransportTypes.DescriptorEvent<HIDDevice>>): TransportTypes.Subscription => {
     let unsubscribed = false;
-    getFirstKProDevice().then(
+    getFirstShellDevice().then(
       device => {
         if (!device) {
-          observer.error(new KProJS.KProError.TransportOpenUserCancelled("Access denied to use KPro device"));
+          observer.error(new ShellJS.ShellError.TransportOpenUserCancelled("Access denied to use Shell device"));
         } else if (!unsubscribed) {
           const deviceModel =
             typeof device.productId === "number"
-              ? KProJS.KProDevice.identifyUSBProductId(device.productId)
+              ? ShellJS.ShellDevice.identifyUSBProductId(device.productId)
               : undefined;
           observer.next({
             type: "add",
@@ -116,7 +116,7 @@ export default class TransportWebHID extends KProJS.Transport {
         }
       },
       error => {
-        observer.error(new KProJS.KProError.TransportOpenUserCancelled(error.message));
+        observer.error(new ShellJS.ShellError.TransportOpenUserCancelled(error.message));
       },
     );
 
@@ -133,7 +133,7 @@ export default class TransportWebHID extends KProJS.Transport {
    * Similar to create() except it will always display the device permission (even if some devices are already accepted).
    */
   static async request() {
-    const [device] = await requestKProDevices();
+    const [device] = await requestShellDevices();
     return TransportWebHID.open(device);
   }
 
@@ -141,13 +141,13 @@ export default class TransportWebHID extends KProJS.Transport {
    * Similar to create() except it will never display the device permission (it returns a Promise<?Transport>, null if it fails to find a device).
    */
   static async openConnected() {
-    const devices = await getKProDevices();
+    const devices = await getShellDevices();
     if (devices.length === 0) return null;
     return TransportWebHID.open(devices[0]);
   }
 
   /**
-   * Create a KPro transport with a HIDDevice
+   * Create a Shell transport with a HIDDevice
    */
   static async open(device: HIDDevice) {
     await device.open();
@@ -157,7 +157,7 @@ export default class TransportWebHID extends KProJS.Transport {
       if (device === e.device) {
         getHID().removeEventListener("disconnect", onDisconnect);
 
-        transport._emitDisconnect(new KProJS.KProError.DisconnectedDevice());
+        transport._emitDisconnect(new ShellJS.ShellError.DisconnectedDevice());
       }
     };
 
@@ -189,13 +189,13 @@ export default class TransportWebHID extends KProJS.Transport {
   exchange = async (apdu: Buffer): Promise<Buffer> => {
     const b = await this.exchangeAtomicImpl(async () => {
       const { channel, packetSize } = this;
-      KProJS.KProLogs.log("apdu", "=> " + apdu.toString("hex"));
-      const framing = KProJS.HIDFraming.hidFraming(channel, packetSize);
+      ShellJS.ShellLogs.log("apdu", "=> " + apdu.toString("hex"));
+      const framing = ShellJS.HIDFraming.hidFraming(channel, packetSize);
       // Write...
       const blocks = framing.makeBlocks(apdu);
 
       for (let i = 0; i < blocks.length; i++) {
-        await this.device.sendReport(0, blocks[i]);
+        await this.device.sendReport(0, blocks[i] as BufferSource);
       }
 
       // Read...
@@ -207,13 +207,13 @@ export default class TransportWebHID extends KProJS.Transport {
         acc = framing.reduceResponse(acc, buffer);
       }
 
-      KProJS.KProLogs.log("apdu", "<= " + result.toString("hex"));
+      ShellJS.ShellLogs.log("apdu", "<= " + result.toString("hex"));
       return result;
     }).catch(e => {
       if (e && e.message && e.message.includes("write")) {
         this._emitDisconnect(e);
 
-        throw new KProJS.KProError.DisconnectedDeviceDuringOperation(e.message);
+        throw new ShellJS.ShellError.DisconnectedDeviceDuringOperation(e.message);
       }
 
       throw e;
