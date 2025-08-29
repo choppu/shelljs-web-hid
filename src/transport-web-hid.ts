@@ -1,5 +1,5 @@
-import ShellJS from "shelljs";
-import { DeviceTypes, TransportTypes } from "shelljs";
+import ShellJS from "@choppu/shelljs";
+import { DeviceTypes, TransportTypes } from "@choppu/shelljs";
 
 const shellDevices = [
   {

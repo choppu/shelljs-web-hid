@@ -1,21 +1,25 @@
 {
-  "name": "shelljs-web-hid",
+  "name": "@choppu/shelljs-web-hid",
   "version": "1.0.0",
-  "description": "Keycard Shell WebHID implementation of the communication layer based on Ledger Transport WebHID",
+  "description": "Keycard Shell WebHID implementation of the communication layer",
   "main": "lib/transport-web-hid.js",
   "module": "lib-es/transport-web-hid.js",
   "browser": "lib-es/transport-web-hid.js",
   "types": "lib/transport-web-hid.d.ts",
+  "repository": {
+    "url": "https://github.com/choppu/shelljs-web-hid.git"
+  },
   "license": "Apache-2.0",
   "scripts": {
-    "clean": "rimraf lib lib-es",
+    "clean": "rm -rf lib lib-es",
     "prepare": "npm run build",
     "build": "tsc && tsc -m ES6 --outDir lib-es",
-    "test": "jest"
+    "test": "jest",
+    "publish": "npm run clean && npm run build && npm publish --access=public"
   },
-  "author": "",
+  "author": "Ksenia Lebedeva",
   "dependencies": {
-    "shelljs": "github:choppu/shelljs"
+    "@choppu/shelljs": "1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
